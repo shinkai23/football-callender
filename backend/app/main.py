@@ -1,4 +1,17 @@
 from fastapi import FastAPI
+
+from app.routers import player_router, team_router
+
+
+app = FastAPI() #FastAPIインスタンス作成
+
+app.include_router(team_router.router) #インスタンスにteam_routerを追加
+app.include_router(player_router.router) #player_routerを追加
+
+
+
+
+"""
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Football Calendar API")
@@ -56,3 +69,5 @@ def get_match_detail(match_id: int):
         if match["id"] == match_id:
             return match
     return {"message": "match not found"}
+
+"""
