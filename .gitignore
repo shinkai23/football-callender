@@ -5,3 +5,5 @@ __pycache__/
 *.db
 backend/app/.env
 .env
+.vscode/
+backend/WC_match_data.json
