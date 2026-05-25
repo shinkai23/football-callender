@@ -31,14 +31,12 @@ W杯出場チームの一覧を取得する。
 ```json
 [
   {
-    "id": 1,
-    "name": "Japan",
-    "country": "Japan"
-  },
-  {
-    "id": 2,
-    "name": "England",
-    "country": "England"
+    "id": 769,
+    "name": "Mexico",
+    "country": "Mexico",
+    "short_name": "Mexico",
+    "tla": "MEX",
+    "crest": "https://crests.football-data.org/769.svg"
   }
 ]
 ```
@@ -64,9 +62,12 @@ W杯出場チームの一覧を取得する。
     "name": "Sample Player",
     "position": "MF",
     "team": {
-      "id": 1,
-      "name": "Japan",
-      "country": "Japan"
+      "id": 769,
+      "name": "Mexico",
+      "country": "Mexico",
+      "short_name": "Mexico",
+      "tla": "MEX",
+      "crest": "https://crests.football-data.org/769.svg"
     },
     "club": {
       "id": 1,
@@ -96,9 +97,12 @@ W杯出場チームの一覧を取得する。
   "name": "Sample Player",
   "position": "MF",
   "team": {
-    "id": 1,
-    "name": "Japan",
-    "country": "Japan"
+    "id": 769,
+    "name": "Mexico",
+    "country": "Mexico",
+    "short_name": "Mexico",
+    "tla": "MEX",
+    "crest": "https://crests.football-data.org/769.svg"
   },
   "club": {
     "id": 1,

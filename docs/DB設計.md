@@ -21,6 +21,9 @@ erDiagram
         int id PK
         string name
         string country
+        string short_name
+        string tla
+        string crest
     }
 
     PLAYER {
@@ -48,3 +51,8 @@ erDiagram
 ### MATCHについて
 Match は試合日程機能側の責務であるため、本設計では詳細なカラム定義は扱わない。
 選手・クラブ機能では、Match が参照する Team を起点に Player / Club を表示する。
+
+### Team ID の扱い
+MVPでは、football-data.org のチームIDを `teams.id` として利用する。
+外部APIを football-data.org に固定することで、別途 `external_id` は持たず、同期処理を単純化する。
+将来的に複数APIを扱う場合は、 `external_id` や `source` カラムの追加を検討する。
