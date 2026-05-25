@@ -19,7 +19,9 @@ pip list
 
 起動
 ```bash
-uvicorn app.main:app --reload
+cd backend
+source .venv/bin/activate
+uvicorn app.main:app --reload --reload-dir app
 ```
 
 起動後、以下にアクセスする。
