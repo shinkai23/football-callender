@@ -1,5 +1,5 @@
 from app.db.session import SessionLocal, init_db
-from app.services.sync_service import sync_world_cup_teams
+from app.services.sync_service import sync_world_cup_data
 
 
 def main() -> None:
@@ -7,8 +7,9 @@ def main() -> None:
 
     db = SessionLocal()
     try:
-        teams = sync_world_cup_teams(db)
+        teams, matches = sync_world_cup_data(db)
         print(f"Synced teams: {len(teams)}")
+        print(f"Synced matches: {len(matches)}")
 
         for team in teams:
             print(f"- {team.id}: {team.name}")
