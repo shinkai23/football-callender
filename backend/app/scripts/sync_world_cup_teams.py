@@ -7,12 +7,20 @@ def main() -> None:
 
     db = SessionLocal()
     try:
-        teams, matches = sync_world_cup_data(db)
-        print(f"Synced teams: {len(teams)}")
-        print(f"Synced matches: {len(matches)}")
+        result = sync_world_cup_data(db)
 
-        for team in teams:
-            print(f"- {team.id}: {team.name}")
+        if not result.success:
+            print(f"Sync failed: {result.message}")
+            return
+
+        print(result.message)
+        print(
+            f"teams={result.teams_count}, "
+            f"matches={result.matches_count}, "
+            f"players={result.players_count}, "
+            f"clubs={result.clubs_count} "
+            f"(total={result.total_count})"
+        )
     finally:
         db.close()
 
