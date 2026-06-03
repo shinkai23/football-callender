@@ -2,11 +2,19 @@ from sqlalchemy.orm import Session
 
 from app.repositories import club_repository, player_repository, team_repository
 from app.services.sync.club_sync_service import sync_club_from_person_data
+from app.services.sync.match_sync_service import (
+    sync_match_from_api_data,
+    sync_teams_and_matches_from_matches,
+)
 from app.services.sync.player_sync_service import (
     sync_player_from_squad_data,
     sync_players_from_team,
 )
-from app.services.sync.sync_service import fetch_world_cup_matches, sync_world_cup_teams
+from app.services.sync.sync_service import (
+    fetch_world_cup_matches,
+    sync_world_cup_data,
+    sync_world_cup_teams,
+)
 from app.services.sync.team_sync_service import (
     sync_team_from_api_data,
     sync_teams_from_matches,
@@ -98,6 +106,46 @@ def test_sync_players_from_team_uses_team_detail(monkeypatch, db: Session) -> No
     assert [player.name for player in players] == ["Sample Player"]
 
 
+def test_sync_match_from_api_data_creates_match(db: Session) -> None:
+    team_repository.create_team(db, 766, "Japan", "Japan")
+    team_repository.create_team(db, 769, "Mexico", "Mexico")
+
+    match = sync_match_from_api_data(
+        db,
+        {
+            "id": 537327,
+            "utcDate": "2026-06-11T19:00:00Z",
+            "stage": "GROUP_STAGE",
+            "venue": "Estadio Azteca",
+            "homeTeam": {"id": 769},
+            "awayTeam": {"id": 766},
+        },
+    )
+
+    assert match is not None
+    assert match.home_team_id == 769
+    assert match.away_team_id == 766
+
+
+def test_sync_teams_and_matches_from_matches(db: Session) -> None:
+    teams, matches = sync_teams_and_matches_from_matches(
+        db,
+        [
+            {
+                "id": 537327,
+                "utcDate": "2026-06-11T19:00:00Z",
+                "stage": "GROUP_STAGE",
+                "venue": "Estadio Azteca",
+                "homeTeam": {"id": 769, "name": "Mexico"},
+                "awayTeam": {"id": 766, "name": "Japan"},
+            }
+        ],
+    )
+
+    assert [team.name for team in teams] == ["Mexico", "Japan"]
+    assert [match.id for match in matches] == [537327]
+
+
 def test_fetch_world_cup_matches_returns_matches(monkeypatch) -> None:
     monkeypatch.setattr(
         "app.services.sync.sync_service.get_competition_matches",
@@ -123,3 +171,28 @@ def test_sync_world_cup_teams_uses_fetched_matches(monkeypatch, db: Session) -> 
     teams = sync_world_cup_teams(db)
 
     assert [team.name for team in teams] == ["Japan", "Mexico"]
+
+
+def test_sync_world_cup_data_returns_sync_result(monkeypatch, db: Session) -> None:
+    monkeypatch.setattr(
+        "app.services.sync.sync_service.get_competition_matches",
+        lambda **kwargs: {
+            "matches": [
+                {
+                    "id": 537327,
+                    "utcDate": "2026-06-11T19:00:00Z",
+                    "stage": "GROUP_STAGE",
+                    "venue": "Estadio Azteca",
+                    "homeTeam": {"id": 769, "name": "Mexico"},
+                    "awayTeam": {"id": 766, "name": "Japan"},
+                }
+            ]
+        },
+    )
+
+    result = sync_world_cup_data(db)
+
+    assert result.success is True
+    assert result.teams_count == 2
+    assert result.matches_count == 1
+    assert result.total_count == 3

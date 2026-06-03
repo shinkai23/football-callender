@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Football Calendar — W杯</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header class="header">
+      <h1 class="header__title">Football Calendar</h1>
+      <p class="header__sub">W杯の試合日程をカレンダーで確認</p>
+      <div class="header__filter">
+        <label for="team-filter">チームで絞り込み</label>
+        <select id="team-filter" aria-label="チームで絞り込み">
+          <option value="">すべてのチーム</option>
+        </select>
+      </div>
+    </header>
+
+    <main class="main">
+      <p id="status" class="status" role="status">読み込み中…</p>
+
+      <section class="calendar-section" aria-labelledby="calendar-heading">
+        <div class="calendar__nav">
+          <button type="button" id="prev-month" aria-label="前の月">←</button>
+          <h2 id="calendar-title" class="calendar__title">—</h2>
+          <button type="button" id="next-month" aria-label="次の月">→</button>
+        </div>
+        <div id="calendar-grid" class="calendar__grid"></div>
+      </section>
+
+      <section class="list-section">
+        <h2 id="list-heading">試合一覧</h2>
+        <div id="match-list" class="match-list"></div>
+      </section>
+    </main>
+
+    <div
+      id="match-modal"
+      class="modal hidden"
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
+      <div class="modal__panel">
+        <button
+          type="button"
+          id="modal-close"
+          class="modal__close"
+          aria-label="閉じる"
+        >
+          ×
+        </button>
+        <div id="modal-body"></div>
+      </div>
+    </div>
+
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>

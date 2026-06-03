@@ -1,0 +1,290 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: #f4f6f8;
+  color: #1a1a1a;
+  line-height: 1.5;
+}
+
+.header {
+  background: #0b3d2e;
+  color: #fff;
+  padding: 1rem 1.25rem;
+}
+
+.header__title {
+  margin: 0 0 0.25rem;
+  font-size: 1.35rem;
+}
+
+.header__sub {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  opacity: 0.9;
+}
+
+.header__filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header__filter label {
+  font-size: 0.875rem;
+}
+
+.header__filter select {
+  min-width: 12rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 4px;
+  border: none;
+}
+
+.main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem 1.25rem 2rem;
+}
+
+.status {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  color: #444;
+}
+
+.status--error {
+  color: #b00020;
+  background: #fde8eb;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+}
+
+.calendar-section,
+.list-section {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.calendar__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.calendar__nav button {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.calendar__nav button:hover {
+  background: #f0f0f0;
+}
+
+.calendar__title {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar__weekday {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #666;
+  padding: 0.25rem;
+}
+
+.calendar__day {
+  position: relative;
+  min-height: 3.25rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background: #fafafa;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.calendar__day--empty {
+  border: none;
+  background: transparent;
+  cursor: default;
+}
+
+.calendar__day--no-match:not(.calendar__day--empty) {
+  opacity: 0.55;
+}
+
+.calendar__day--today {
+  border-color: #0b3d2e;
+}
+
+.calendar__day--selected {
+  background: #e8f5e9;
+  border-color: #2e7d32;
+}
+
+.calendar__day-num {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.calendar__badge {
+  font-size: 0.65rem;
+  background: #0b3d2e;
+  color: #fff;
+  border-radius: 999px;
+  padding: 0 0.35rem;
+  min-width: 1.1rem;
+}
+
+.list-section h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+}
+
+.match-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.match-list__empty {
+  color: #666;
+  margin: 0;
+}
+
+.match-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: box-shadow 0.15s;
+}
+
+.match-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.match-card__teams {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.match-card__team {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.team-crest {
+  object-fit: contain;
+  vertical-align: middle;
+}
+
+.match-card__vs {
+  color: #888;
+  font-weight: 400;
+  font-size: 0.875rem;
+}
+
+.match-card__meta {
+  margin: 0.25rem 0 0;
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 100;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal__panel {
+  background: #fff;
+  border-radius: 8px;
+  max-width: 420px;
+  width: 100%;
+  padding: 1.25rem;
+  position: relative;
+}
+
+.modal__close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  border: none;
+  background: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  line-height: 1;
+  color: #666;
+}
+
+.modal__title {
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+  padding-right: 1.5rem;
+}
+
+.modal__dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 5rem 1fr;
+  gap: 0.35rem 0.75rem;
+  font-size: 0.9rem;
+}
+
+.modal__dl dt {
+  color: #666;
+  font-weight: 500;
+}
+
+.modal__dl dd {
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .calendar__day {
+    min-height: 2.5rem;
+  }
+
+  .match-card__teams {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
