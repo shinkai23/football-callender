@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.models.team import Team
 from app.schemas.sync import SyncResult
 from app.services.football_api_service import get_competition_matches
-from app.services.sync.match_sync_service import sync_teams_and_matches_from_matches
+from app.services.sync.match_sync_service import sync_matches_from_matches
 from app.services.sync.team_sync_service import sync_teams_from_matches
 
 
@@ -36,7 +36,8 @@ def sync_world_cup_data(db: Session) -> SyncResult:
             message="API呼び出しに失敗したか、データが空です。",
         )
 
-    synced_teams, synced_matches = sync_teams_and_matches_from_matches(db, matches)
+    synced_teams = sync_teams_from_matches(db, matches)
+    synced_matches = sync_matches_from_matches(db, matches)
 
     teams_count = len(synced_teams)
     matches_count = len(synced_matches)

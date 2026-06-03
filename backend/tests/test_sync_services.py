@@ -4,7 +4,7 @@ from app.repositories import club_repository, player_repository, team_repository
 from app.services.sync.club_sync_service import sync_club_from_person_data
 from app.services.sync.match_sync_service import (
     sync_match_from_api_data,
-    sync_teams_and_matches_from_matches,
+    sync_matches_from_matches,
 )
 from app.services.sync.player_sync_service import (
     sync_player_from_squad_data,
@@ -127,8 +127,11 @@ def test_sync_match_from_api_data_creates_match(db: Session) -> None:
     assert match.away_team_id == 766
 
 
-def test_sync_teams_and_matches_from_matches(db: Session) -> None:
-    teams, matches = sync_teams_and_matches_from_matches(
+def test_sync_matches_from_matches(db: Session) -> None:
+    team_repository.create_team(db, 766, "Japan", "Japan")
+    team_repository.create_team(db, 769, "Mexico", "Mexico")
+
+    matches = sync_matches_from_matches(
         db,
         [
             {
@@ -142,7 +145,6 @@ def test_sync_teams_and_matches_from_matches(db: Session) -> None:
         ],
     )
 
-    assert [team.name for team in teams] == ["Mexico", "Japan"]
     assert [match.id for match in matches] == [537327]
 
 

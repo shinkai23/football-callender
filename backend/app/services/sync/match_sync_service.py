@@ -3,9 +3,7 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 
 from app.models.match import Match
-from app.models.team import Team
 from app.repositories import match_repository
-from app.services.sync.team_sync_service import sync_team_from_api_data
 
 
 def sync_match_from_api_data(db: Session, match_data: dict) -> Match | None:
@@ -39,33 +37,15 @@ def sync_match_from_api_data(db: Session, match_data: dict) -> Match | None:
     )
 
 
-def sync_teams_and_matches_from_matches(
+def sync_matches_from_matches(
     db: Session,
     matches: list[dict],
-) -> tuple[list[Team], list[Match]]:
-    synced_teams: list[Team] = []
+) -> list[Match]:
     synced_matches: list[Match] = []
-    synced_team_ids: set[int] = set()
 
     for match_data in matches:
-        for side in ("homeTeam", "awayTeam"):
-            team_data = match_data.get(side)
-            if not team_data:
-                continue
-
-            team_id = team_data.get("id")
-            if team_id is None or team_id in synced_team_ids:
-                continue
-
-            team = sync_team_from_api_data(db, team_data)
-            if team is None:
-                continue
-
-            synced_teams.append(team)
-            synced_team_ids.add(team_id)
-
         match = sync_match_from_api_data(db, match_data)
         if match is not None:
             synced_matches.append(match)
 
-    return synced_teams, synced_matches
+    return synced_matches
