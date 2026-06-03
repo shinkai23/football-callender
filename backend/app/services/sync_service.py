@@ -9,8 +9,7 @@ def sync_world_cup_data(db: Session) -> SyncResult:
     """W杯関連のサッカーデータ（試合・チーム、将来は選手・クラブ）を外部APIからDBへ同期する。"""
     data = get_competition_matches(
         competition_code="WC",
-        date_from="2026-06-11",
-        date_to="2026-07-19",
+        season=2026,
     )
 
     if data is None:
