@@ -9,7 +9,7 @@ from app.db.base import Base
 class Match(Base):
     __tablename__ = "matches"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     kickoff_at: Mapped[datetime] = mapped_column(nullable=False)
     stage: Mapped[str] = mapped_column(nullable=False)
     venue: Mapped[str] = mapped_column(nullable=False)

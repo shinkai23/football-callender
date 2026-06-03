@@ -5,6 +5,7 @@ from app.core.config import FOOTBALL_API_BASE_URL, FOOTBALL_API_KEY
 
 def fetch_data(endpoint: str, params: dict | None = None) -> dict | None:
     url = f"{FOOTBALL_API_BASE_URL}{endpoint}"
+
     headers = {
         "X-Auth-Token": FOOTBALL_API_KEY,
     }
@@ -42,8 +43,22 @@ def get_competition_matches(
         "group": group,
         "season": season,
     }
-    params = {k: v for k, v in params.items() if v is not None}
+
+    params = {
+        key: value
+        for key, value in params.items()
+        if value is not None
+    }
+
     return fetch_data(
         endpoint=f"/competitions/{competition_code}/matches",
         params=params,
     )
+
+
+def get_team_detail(team_id: int) -> dict | None:
+    return fetch_data(endpoint=f"/teams/{team_id}")
+
+
+def get_person_detail(person_id: int) -> dict | None:
+    return fetch_data(endpoint=f"/persons/{person_id}")

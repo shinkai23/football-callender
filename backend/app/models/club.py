@@ -6,7 +6,7 @@ from app.db.base import Base
 class Club(Base):
     __tablename__ = "clubs"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(nullable=False)
     country: Mapped[str] = mapped_column(nullable=False)
     league: Mapped[str] = mapped_column(nullable=False)
