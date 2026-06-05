@@ -46,7 +46,9 @@ def test_read_matches(client: TestClient, seeded_db: Session) -> None:
     response = client.get("/api/v1/matches")
 
     assert response.status_code == 200
-    assert response.json()[0]["home_team"]["name"] == "Mexico"
+    data = response.json()[0]
+    assert data["home_team"]["name"] == "Mexico"
+    assert data["kickoff_at"] == "2026-06-11T19:00:00"
 
 
 def test_read_match_returns_404(client: TestClient, seeded_db: Session) -> None:

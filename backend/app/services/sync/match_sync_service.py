@@ -1,4 +1,5 @@
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from sqlalchemy.orm import Session
 
@@ -24,7 +25,8 @@ def sync_match_from_api_data(db: Session, match_data: dict) -> Match | None:
     if existing_match is not None:
         return existing_match
 
-    kickoff_at = datetime.fromisoformat(kickoff_raw.replace("Z", "+00:00"))
+    kickoff_utc = datetime.fromisoformat(kickoff_raw.replace("Z", "+00:00"))
+    kickoff_at = kickoff_utc.astimezone(ZoneInfo("Asia/Tokyo")).replace(tzinfo=None)
 
     return match_repository.create_match(
         db=db,

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy.orm import Session
 
 from app.repositories import club_repository, player_repository, team_repository
@@ -125,6 +127,7 @@ def test_sync_match_from_api_data_creates_match(db: Session) -> None:
     assert match is not None
     assert match.home_team_id == 769
     assert match.away_team_id == 766
+    assert match.kickoff_at == datetime(2026, 6, 12, 4, 0)
 
 
 def test_sync_matches_from_matches(db: Session) -> None:
