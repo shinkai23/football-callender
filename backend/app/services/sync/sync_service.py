@@ -10,8 +10,7 @@ from app.services.sync.team_sync_service import sync_teams_from_matches
 def fetch_world_cup_matches() -> list[dict]:
     data = get_competition_matches(
         competition_code="WC",
-        date_from="2026-06-11",
-        date_to="2026-07-19",
+        season=2026,
     )
 
     if data is None:

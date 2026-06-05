@@ -3,7 +3,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-ENV_FILE_PATH = Path(__file__).resolve().parents[1] / ".env"
+ENV_FILE_PATH = Path(__file__).resolve().parents[2] / ".env"
 
 load_dotenv(ENV_FILE_PATH)
 
