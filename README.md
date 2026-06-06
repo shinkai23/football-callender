@@ -27,7 +27,7 @@ pip install -r requirements.txt
 API キーは **`backend/.env`** に置きます（`app/core/config.py` が `backend/` 直下を読み込みます）。
 
 ```bash
-cp app/.env.example .env   # backend ディレクトリ内で実行
+cp .env.example .env   # backend ディレクトリ内で実行
 # .env を編集
 ```
 
