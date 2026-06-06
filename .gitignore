@@ -4,6 +4,7 @@ __pycache__/
 *.pyc
 .pytest_cache/
 *.db
+backend/.env
 backend/app/.env
 .env
 .vscode/
