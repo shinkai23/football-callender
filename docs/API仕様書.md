@@ -1,32 +1,32 @@
-## 選手・クラブ機能のAPI仕様書
+# API 仕様書：Football Calendar
 
-作成者: shinkai23
+## 目的
 
-### 目的
-本ドキュメントでは、選手・クラブ機能に関係するAPI仕様を整理する。
-MVPでは、ライトユーザーが代表選手の所属クラブを理解できることを優先し、選手成績やクラブ詳細情報を扱わない。
+REST API のエンドポイントとレスポンス形式をまとめる。データ投入は sync スクリプトのみ（POST / PUT なし）。
 
-### 対象範囲
-- チーム一覧取得
-- 選手一覧取得
-- チーム別選手一覧取得
-- 選手詳細取得
-- 選手詳細情報に含めるクラブ情報
+- 開発時ベース URL: `http://127.0.0.1:8000`
+- Swagger UI: `http://127.0.0.1:8000/docs`
+- `kickoff_at` は sync 時に JST へ変換済み
 
-### API エンドポイント
-|メソッド|path|目的|
-|---|---|---|
-| GET | `/api/teams` | チーム一覧を取得する |
-| GET | `/api/players` | 選手一覧を取得する |
-| GET | `/api/players?team_id={team_id}` | 指定チームの選手一覧を取得する |
-| GET | `/api/players/{player_id}` | 選手詳細を取得する |
+---
 
-### GET /api/teams
+## エンドポイント一覧
 
-#### 概要
-W杯出場チームの一覧を取得する。
+| メソッド | path | v1 | 説明 |
+|---|---|---|---|
+| GET | `/api/teams` | 利用 | チーム一覧 |
+| GET | `/api/v1/matches` | 利用 | 試合一覧 |
+| GET | `/api/v1/matches/{match_id}` | 利用 | 試合詳細 |
+| GET | `/api/players` | 実装のみ | 選手一覧（sync 未実施） |
+| GET | `/api/players/{player_id}` | 実装のみ | 選手詳細 |
+| GET | `/api/clubs` | 実装のみ | クラブ一覧 |
+| GET | `/api/clubs/{club_id}` | 実装のみ | クラブ詳細 |
 
-#### レスポンス例
+---
+
+## GET /api/teams
+
+W杯出場チームの一覧。
 
 ```json
 [
@@ -41,19 +41,45 @@ W杯出場チームの一覧を取得する。
 ]
 ```
 
-### GET /api/players
+---
 
-#### 概要
-登録されている選手一覧を取得する。
+## GET /api/v1/matches
 
-#### クエリパラメータ
-| 名前 | 型 | 必須 | 説明 |
-|---|---|---|---|
-| team_id | int | 任意 | 指定したチームの選手のみ取得する |
+同期済み試合の一覧。フロントのカレンダー・リストで使用。
 
-指定したチームが存在し、該当する選手がいない場合は空配列を返す。
+**v2 予定:** `?competition_code=WC` で大会絞り込み、レスポンスに `status`・スコア等を追加。
 
-#### レスポンス例
+```json
+[
+  {
+    "id": 500001,
+    "kickoff_at": "2026-06-11T19:00:00",
+    "stage": "GROUP_STAGE",
+    "venue": "Estadio Azteca",
+    "home_team": { "id": 769, "name": "Mexico", "...": "..." },
+    "away_team": { "id": 770, "name": "South Africa", "...": "..." }
+  }
+]
+```
+
+---
+
+## GET /api/v1/matches/{match_id}
+
+試合 1 件。フィールドは一覧と同じ。
+
+- 404: `{"detail": "Match not found"}`
+
+---
+
+## GET /api/players
+
+| クエリ | 必須 | 説明 |
+|---|---|---|
+| team_id | 任意 | 指定チームの選手のみ |
+
+- 該当なし: 空配列 `[]`
+- 存在しない team_id: 404 `Team not found`
 
 ```json
 [
@@ -61,76 +87,48 @@ W杯出場チームの一覧を取得する。
     "id": 1,
     "name": "Sample Player",
     "position": "MF",
-    "team": {
-      "id": 769,
-      "name": "Mexico",
-      "country": "Mexico",
-      "short_name": "Mexico",
-      "tla": "MEX",
-      "crest": "https://crests.football-data.org/769.svg"
-    },
-    "club": {
-      "id": 1,
-      "name": "Sample Club",
-      "country": "England",
-      "league": "Premier League"
-    }
+    "team": { "id": 769, "name": "Mexico", "...": "..." },
+    "club": { "id": 1, "name": "Sample Club", "country": "England", "league": "Premier League" }
   }
 ]
 ```
 
-### GET /api/players/{player_id}
+---
 
-#### 概要
-指定した選手の詳細情報を取得する。
+## GET /api/players/{player_id}
 
-#### パスパラメータ
-| 名前 | 型 | 説明 |
+- 404: `{"detail": "Player not found"}`
+
+---
+
+## GET /api/clubs / GET /api/clubs/{club_id}
+
+```json
+{ "id": 86, "name": "Real Madrid CF", "country": "Spain", "league": "Primera Division" }
+```
+
+- 404: `{"detail": "Club not found"}`
+
+---
+
+## v2 で追加予定（MatchResponse）
+
+| フィールド | 型 | 説明 |
 |---|---|---|
-| player_id | int | 取得したい選手のID |
+| competition_code | str | 大会コード（`WC`, `PL` 等） |
+| status | str | `SCHEDULED`, `FINISHED` 等 |
+| home_score | int \| null | ホーム得点 |
+| away_score | int \| null | アウェイ得点 |
 
-#### レスポンス例
+詳細は `docs/モデル・スキーマ設計.md` を参照。
 
-```json
-{
-  "id": 1,
-  "name": "Sample Player",
-  "position": "MF",
-  "team": {
-    "id": 769,
-    "name": "Mexico",
-    "country": "Mexico",
-    "short_name": "Mexico",
-    "tla": "MEX",
-    "crest": "https://crests.football-data.org/769.svg"
-  },
-  "club": {
-    "id": 1,
-    "name": "Sample Club",
-    "country": "England",
-    "league": "Premier League"
-  }
-}
-```
+---
 
-## エラーレスポンス方針
-存在しない選手IDが指定された場合、HTTP 404 を返す
+## エラー一覧
 
-```json
-{
-    "detail": "Player not found"
-}
-```
-
-存在しないチームIDが指定された場合、HTTP 404 を返す
-
-```json
-{
-    "detail": "Team not found"
-}
-```
-
-### MVPで扱わないAPI
-- GET /api/clubs
-- GET /api/clubs/{club_id}
-- GET /api/players/{player_id}/stats
+| 条件 | HTTP | detail |
+|---|---|---|
+| 試合が存在しない | 404 | Match not found |
+| チームが存在しない（players?team_id=） | 404 | Team not found |
+| 選手が存在しない | 404 | Player not found |
+| クラブが存在しない | 404 | Club not found |
