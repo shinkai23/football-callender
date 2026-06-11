@@ -91,6 +91,10 @@ def seeded_db(db: Session) -> Session:
         venue="Estadio Azteca",
         home_team=mexico,
         away_team=japan,
+        competition_code="WC",
+        status="SCHEDULED",
+        home_score=None,
+        away_score=None,
     )
 
     db.add_all([japan, mexico, club, player, match])
