@@ -49,6 +49,10 @@ def test_match_service_returns_match(seeded_db: Session) -> None:
     match = match_service.get_match_by_id(seeded_db, 537327)
 
     assert match.stage == "GROUP_STAGE"
+    assert match.competition_code == "WC"
+    assert match.status == "SCHEDULED"
+    assert match.home_score is None
+    assert match.away_score is None
 
 
 def test_match_service_raises_404_for_missing_match(seeded_db: Session) -> None:
