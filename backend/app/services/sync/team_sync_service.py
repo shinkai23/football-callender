@@ -13,7 +13,15 @@ def sync_team_from_api_data(db: Session, team_data: dict) -> Team | None:
 
     existing_team = team_repository.get_team_by_id(db, team_id)
     if existing_team is not None:
-        return existing_team
+        return team_repository.update_team(
+            db=db,
+            team=existing_team,
+            name=name,
+            country=name,
+            short_name=team_data.get("shortName"),
+            tla=team_data.get("tla"),
+            crest=team_data.get("crest"),
+        )
 
     return team_repository.create_team(
         db=db,

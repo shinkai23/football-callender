@@ -40,6 +40,34 @@ def test_sync_team_from_api_data_creates_team(db: Session) -> None:
     assert team_repository.get_team_by_id(db, 766) == team
 
 
+def test_sync_team_from_api_data_updates_existing_team(db: Session) -> None:
+    team_repository.create_team(
+        db=db,
+        team_id=766,
+        name="Old Japan",
+        country="Old Japan",
+        short_name="Old",
+        tla="OLD",
+        crest="https://example.com/old.svg",
+    )
+
+    team = sync_team_from_api_data(
+        db,
+        {
+            "id": 766,
+            "name": "Japan",
+            "shortName": "Japan",
+            "tla": "JPN",
+            "crest": "https://example.com/japan.svg",
+        },
+    )
+
+    assert team is not None
+    assert team.name == "Japan"
+    assert team.tla == "JPN"
+    assert team.crest == "https://example.com/japan.svg"
+
+
 def test_sync_teams_from_matches_skips_duplicates(db: Session) -> None:
     matches = [
         {
@@ -128,6 +156,51 @@ def test_sync_match_from_api_data_creates_match(db: Session) -> None:
     assert match.home_team_id == 769
     assert match.away_team_id == 766
     assert match.kickoff_at == datetime(2026, 6, 12, 4, 0)
+
+
+def test_sync_match_from_api_data_updates_existing_match(db: Session) -> None:
+    team_repository.create_team(db, 766, "Japan", "Japan")
+    team_repository.create_team(db, 769, "Mexico", "Mexico")
+    sync_match_from_api_data(
+        db,
+        {
+            "id": 537327,
+            "utcDate": "2026-06-11T19:00:00Z",
+            "stage": "GROUP_STAGE",
+            "venue": "Old Venue",
+            "homeTeam": {"id": 769},
+            "awayTeam": {"id": 766},
+            "status": "TIMED",
+        },
+    )
+
+    match = sync_match_from_api_data(
+        db,
+        {
+            "id": 537327,
+            "utcDate": "2026-06-11T20:00:00Z",
+            "stage": "LAST_16",
+            "venue": "New Venue",
+            "homeTeam": {"id": 769},
+            "awayTeam": {"id": 766},
+            "competition": {"code": "WC"},
+            "status": "FINISHED",
+            "score": {
+                "fullTime": {
+                    "home": 2,
+                    "away": 1,
+                }
+            },
+        },
+    )
+
+    assert match is not None
+    assert match.kickoff_at == datetime(2026, 6, 12, 5, 0)
+    assert match.stage == "LAST_16"
+    assert match.venue == "New Venue"
+    assert match.status == "FINISHED"
+    assert match.home_score == 2
+    assert match.away_score == 1
 
 
 def test_sync_matches_from_matches(db: Session) -> None:
