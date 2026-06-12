@@ -12,3 +12,4 @@ FOOTBALL_API_BASE_URL = os.getenv(
     "https://api.football-data.org/v4",
 ).rstrip("/")
 FOOTBALL_API_KEY = os.getenv("FOOTBALL_API_KEY", "")
+SYNC_ON_STARTUP = os.getenv("SYNC_ON_STARTUP", "false").lower() == "true"

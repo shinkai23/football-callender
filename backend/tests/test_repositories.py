@@ -29,6 +29,34 @@ def test_team_repository_creates_and_reads_team(db: Session) -> None:
     assert team_repository.get_teams(db) == [found]
 
 
+def test_team_repository_updates_team(db: Session) -> None:
+    created = team_repository.create_team(
+        db=db,
+        team_id=766,
+        name="Old Japan",
+        country="Old Japan",
+        short_name="Old",
+        tla="OLD",
+        crest="https://example.com/old.svg",
+    )
+
+    updated = team_repository.update_team(
+        db=db,
+        team=created,
+        name="Japan",
+        country="Japan",
+        short_name="Japan",
+        tla="JPN",
+        crest="https://example.com/japan.svg",
+    )
+
+    assert updated.name == "Japan"
+    assert updated.country == "Japan"
+    assert updated.short_name == "Japan"
+    assert updated.tla == "JPN"
+    assert updated.crest == "https://example.com/japan.svg"
+
+
 def test_club_repository_creates_and_reads_club(db: Session) -> None:
     created = club_repository.create_club(
         db=db,
