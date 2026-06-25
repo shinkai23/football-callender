@@ -5,13 +5,13 @@ from app.models.team import Team
 
 
 def create_team(
-        db: Session,
-        team_id: int,
-        name: str,
-        country: str,
-        short_name: str | None = None,
-        tla: str | None = None,
-        crest: str | None = None,
+    db: Session,
+    team_id: int,
+    name: str,
+    country: str,
+    short_name: str | None = None,
+    tla: str | None = None,
+    crest: str | None = None,
 ) -> Team:
     team = Team(
         id=team_id,
@@ -37,3 +37,24 @@ def get_team_by_id(db: Session, team_id: int) -> Team | None:
         Team.id == team_id,
     )
     return db.scalar(statement)
+
+
+def update_team(
+    db: Session,
+    team: Team,
+    *,
+    name: str,
+    country: str,
+    short_name: str | None,
+    tla: str | None,
+    crest: str | None,
+) -> Team:
+    team.name = name
+    team.country = country
+    team.short_name = short_name
+    team.tla = tla
+    team.crest = crest
+
+    db.commit()
+    db.refresh(team)
+    return team

@@ -21,21 +21,46 @@ def sync_match_from_api_data(db: Session, match_data: dict) -> Match | None:
     ):
         return None
 
-    existing_match = match_repository.get_match_by_id(db, match_id)
-    if existing_match is not None:
-        return existing_match
-
     kickoff_utc = datetime.fromisoformat(kickoff_raw.replace("Z", "+00:00"))
     kickoff_at = kickoff_utc.astimezone(ZoneInfo("Asia/Tokyo")).replace(tzinfo=None)
+    stage = match_data.get("stage") or "UNKNOWN"
+    venue = match_data.get("venue") or "UNKNOWN"
+    competition = match_data.get("competition") or {}
+    competition_code = competition.get("code") or "WC"
+    status = match_data.get("status") or "SCHEDULED"
+    score = match_data.get("score") or {}
+    full_time = score.get("fullTime") or {}
+    home_score = full_time.get("home")
+    away_score = full_time.get("away")
+
+    existing_match = match_repository.get_match_by_id(db, match_id)
+    if existing_match is not None:
+        return match_repository.update_match(
+            db=db,
+            match=existing_match,
+            kickoff_at=kickoff_at,
+            stage=stage,
+            venue=venue,
+            home_team_id=home_team_id,
+            away_team_id=away_team_id,
+            competition_code=competition_code,
+            status=status,
+            home_score=home_score,
+            away_score=away_score,
+        )
 
     return match_repository.create_match(
         db=db,
         match_id=match_id,
         kickoff_at=kickoff_at,
-        stage=match_data.get("stage") or "UNKNOWN",
-        venue=match_data.get("venue") or "UNKNOWN",
+        stage=stage,
+        venue=venue,
         home_team_id=home_team_id,
         away_team_id=away_team_id,
+        competition_code=competition_code,
+        status=status,
+        home_score=home_score,
+        away_score=away_score,
     )
 
 
