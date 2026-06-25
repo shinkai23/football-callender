@@ -150,6 +150,34 @@ function formatKickoff(iso) {
   });
 }
 
+function formatScore(match) {
+  const hasHomeScore =
+    match.home_score !== null && match.home_score !== undefined;
+  const hasAwayScore =
+    match.away_score !== null && match.away_score !== undefined;
+
+  if (!hasHomeScore || !hasAwayScore) {
+    return "スコア未定";
+  }
+
+  return `${match.home_score} - ${match.away_score}`;
+}
+
+function formatStatus(status) {
+  const labels = {
+    SCHEDULED: "予定",
+    TIMED: "時刻確定",
+    IN_PLAY: "試合中",
+    PAUSED: "中断中",
+    FINISHED: "終了",
+    POSTPONED: "延期",
+    SUSPENDED: "一時停止",
+    CANCELED: "中止",
+  };
+
+  return labels[status] ?? status ?? "未定";
+}
+
 function teamLine(team) {
   const crest = team.crest
     ? `<img class="team-crest" src="${team.crest}" alt="" width="24" height="24" />`
@@ -195,6 +223,7 @@ function renderMatchList() {
         <div class="match-card__team">${teamLine(match.away_team)}</div>
       </div>
       <p class="match-card__meta">${formatKickoff(match.kickoff_at)}</p>
+      <p class="match-card__meta">${formatStatus(match.status)} · ${formatScore(match)}</p>
       <p class="match-card__meta">${match.venue} · ${match.stage}</p>
     `;
     card.addEventListener("click", () => openMatchModal(match));
@@ -209,6 +238,8 @@ function openMatchModal(match) {
       <dt>日時</dt><dd>${formatKickoff(match.kickoff_at)}</dd>
       <dt>会場</dt><dd>${match.venue}</dd>
       <dt>ステージ</dt><dd>${match.stage}</dd>
+      <dt>status</dt><dd>${formatStatus(match.status)}</dd>
+      <dt>スコア</dt><dd>${formatScore(match)}</dd>
       <dt>ホーム</dt><dd>${match.home_team.name}${match.home_team.tla ? ` (${match.home_team.tla})` : ""}</dd>
       <dt>アウェイ</dt><dd>${match.away_team.name}${match.away_team.tla ? ` (${match.away_team.tla})` : ""}</dd>
     </dl>
